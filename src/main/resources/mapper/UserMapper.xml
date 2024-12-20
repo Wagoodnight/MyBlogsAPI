@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.zhenxun.blogs.api.mapper.UserMapper">
+    <update id="updatePassword">
+        UPDATE t_user
+        SET password = #{localResetPasswordForm.password}
+        WHERE email = #{localResetPasswordForm.email};
+    </update>
+
+    <select id="login" resultType="top.zhenxun.blogs.api.pojo.vo.UserVO">
+        SELECT user_id, nick_name, email, role, last_login_time
+        FROM t_user
+        WHERE email = #{loginForm.email} AND password = #{loginForm.password};
+    </select>
+
+    <select id="emailList" resultType="java.lang.String">
+        SELECT email
+        FROM t_user;
+    </select>
+</mapper>

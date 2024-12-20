@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.zhenxun.blogs.api.mapper.ProfileMapper">
+
+    <update id="updateProfile">
+        UPDATE t_profile
+        <set>
+            <if test="profile.name != null and profile.name.trim() != ''">
+                name = #{profile.name},
+            </if>
+            <if test="profile.avatar != null and profile.avatar.trim() != ''">
+                avatar = #{profile.avatar},
+            </if>
+            <if test="profile.webTitle != null and profile.webTitle.trim() != ''">
+                web_title = #{profile.webTitle},
+            </if>
+            <if test="profile.area != null and profile.area.trim() != ''">
+                area = #{profile.area},
+            </if>
+            <if test="profile.bio != null and profile.bio.trim() != ''">
+                bio = #{profile.bio},
+            </if>
+            <if test="profile.github != null and profile.github.trim() != ''">
+                github = #{profile.github},
+            </if>
+            <if test="profile.telegram != null and profile.telegram.trim() != ''">
+                telegram = #{profile.telegram},
+            </if>
+            <if test="profile.email != null  and profile.email.trim() != ''">
+                email = #{profile.email},
+            </if>
+            <if test="profile.markdown != null and profile.markdown.trim() != ''">
+                markdown = #{profile.markdown},
+            </if>
+        </set>
+        WHERE id = #{profile.id}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.zhenxun.blogs.api.mapper.TagsMapper">
+
+    <select id="selectTags" resultType="top.zhenxun.blogs.api.entity.Tags">
+        SELECT * FROM t_tags;
+    </select>
+    <select id="selectTagCount" resultType="top.zhenxun.blogs.api.pojo.vo.TagCount">
+        SELECT tags, COUNT(*) AS tag_count
+        FROM t_blogs
+        GROUP BY tags
+        ORDER BY tags;
+    </select>
+</mapper>

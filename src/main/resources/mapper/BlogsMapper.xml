@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.zhenxun.blogs.api.mapper.BlogsMapper">
+
+    <select id="blogsPage" resultType="top.zhenxun.blogs.api.pojo.vo.BlogListVO">
+        SELECT * FROM t_blogs
+        <where>
+            1 = 1
+            <if test="blogsQuery.tags != null">
+                AND tags = #{blogsQuery.tags}
+            </if>
+            <if test="blogsQuery.status != null">
+                AND status = #{blogsQuery.status}
+            </if>
+            <if test="blogsQuery.isDelete != null">
+                AND is_delete = #{blogsQuery.isDelete}
+            </if>
+        </where>
+        ORDER BY publish_time DESC
+    </select>
+
+    <select id="fuzzySearchPage" resultType="top.zhenxun.blogs.api.pojo.vo.BlogListVO">
+        SELECT * FROM t_blogs
+        <where>
+            <if test="blogFuzzySearchQuery.searchKey != null and blogFuzzySearchQuery.searchKey.trim() != ''">
+                AND (
+                title LIKE '%' || #{blogFuzzySearchQuery.searchKey} || '%'
+                <if test="blogFuzzySearchQuery.searchType == 2">
+                    OR
+                    content LIKE '%' || #{blogFuzzySearchQuery.searchKey} || '%'
+                </if>
+                )
+            </if>
+            AND status = 1
+            AND is_delete = 0
+        </where>
+        ORDER BY publish_time DESC
+    </select>
+</mapper>

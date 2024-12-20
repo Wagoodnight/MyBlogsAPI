@@ -1,0 +1,35 @@
+server:
+  port: 6060
+  servlet:
+    context-path: /api
+spring:
+  datasource:
+    url: jdbc:sqlite:./blogs.db
+    driver-class-name: org.sqlite.JDBC
+    username: ""
+    password: ""
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  sql:
+    init:
+      schema-locations: classpath:init.sql
+      mode: always
+
+mybatis-plus:
+  type-handlers-package: top.zhenxun.blogs.api.handler
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    mybatis: info
+    org.example: info
+    org.springframework: info
+  config:
+    classpath:log4j2.xml
+
