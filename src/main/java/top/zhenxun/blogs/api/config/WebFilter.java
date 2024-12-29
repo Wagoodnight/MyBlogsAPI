@@ -3,7 +3,9 @@ package top.zhenxun.blogs.api.config;
 
 import org.springframework.context.annotation.Configuration;
 import top.zhenxun.blogs.api.common.Const;
+import top.zhenxun.blogs.api.common.ResponseType;
 import top.zhenxun.blogs.api.pojo.CurrentLoginUser;
+import top.zhenxun.blogs.api.utils.ResponseUtil;
 import top.zhenxun.blogs.api.utils.TokenUtil;
 
 import javax.servlet.*;
@@ -40,6 +42,10 @@ public class WebFilter implements Filter {
         String token = request.getHeader("Authorization");
 
         if (token != null) {
+            if (!TokenUtil.verify(token)) {
+                ResponseUtil.responseException(response, HttpServletResponse.SC_OK, ResponseType.NOT_LOGIN.getCode(), ResponseType.NOT_LOGIN.getMsg());
+                return;
+            }
             CurrentLoginUser loginUser = TokenUtil.getPayload(token);
             request.setAttribute(Const.CURRENT_LOGIN_USER, loginUser);
         }

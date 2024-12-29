@@ -8,10 +8,16 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import top.zhenxun.blogs.api.common.Const;
+import top.zhenxun.blogs.api.common.ResponseType;
+import top.zhenxun.blogs.api.exception.ServiceException;
+import top.zhenxun.blogs.api.utils.RedisUtils;
+import top.zhenxun.blogs.api.utils.ResponseUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -29,6 +35,9 @@ public class WatchDog {
     private static final Logger log = LogManager.getLogger(WatchDog.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Autowired
+    private RedisUtils redisUtils;
+
     /**
      * 定义切点，匹配所有 Controller 的方法
      */
@@ -37,7 +46,7 @@ public class WatchDog {
     }
 
     @Before("controllerPointcut()")
-    public void logRequest(JoinPoint joinPoint) {
+    public void logRequest(JoinPoint joinPoint) throws ServiceException {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
             return;
@@ -46,7 +55,52 @@ public class WatchDog {
         HttpServletRequest request = attributes.getRequest();
 
         try {
-            String ip = getClientIp(request);
+            String ip = ResponseUtil.getClientIp(request); // 获取请求的IP地址
+            long currentSecond = System.currentTimeMillis() / 1000; // 当前秒
+            String redisKey = "request_count:" + ip + ":" + currentSecond; // 使用当前秒来区分
+
+            String blockKey = "blocked_ip:" + ip; // 被封禁的 Redis key
+            String loginBlockKey = "login_blocked_ip:" + ip; // 登录失败被封禁的 Redis key
+            String forbiddenBlockKet = "forbidden_blocked_ip:" + ip; // 权限验证失败被封禁的 Redis key
+
+            // 检查 IP 是否被封禁
+            if (redisUtils.hasKey(blockKey)) {
+                throw new ServiceException(ResponseType.UNAUTHORIZED);
+            }
+            if (redisUtils.hasKey(loginBlockKey)) {
+                throw new ServiceException(ResponseType.UNAUTHORIZED);
+            }
+            if (redisUtils.hasKey(forbiddenBlockKet)) {
+                throw new ServiceException(ResponseType.UNAUTHORIZED);
+            }
+
+            // 设置每秒钟最大请求次数
+            int maxRequestPerSecond = Const.MAX_REQUEST_PER_SECOND;
+
+            // 获取当前 IP 在当前秒内的请求次数
+            Integer requestCount = (Integer) redisUtils.get(redisKey);
+
+            // 如果请求次数不存在，初始化为 0
+            if (requestCount == null) {
+                requestCount = 0;
+                // 如果是首次请求，则设置该键的过期时间为 1 秒
+                redisUtils.set(redisKey, requestCount, 1);
+            }
+
+            // 如果请求次数超出最大请求次数，封禁 IP
+            if (requestCount >= maxRequestPerSecond) {
+                // 设置封禁 IP
+                redisUtils.set(blockKey, true, Const.REQUEST_LIMIT_BLOCK_PERIOD);
+
+                // 记录封禁日志
+                log.warn("IP {} has been blocked for 10 minutes due to excessive requests", ip);
+                throw new ServiceException(ResponseType.UNAUTHORIZED);
+            }
+
+            // 如果没有封禁，则继续增加请求次数
+            redisUtils.incr(redisKey, 1);
+
+            // 记录请求信息
             int port = request.getRemotePort();
             String uri = request.getRequestURI();
             String method = request.getMethod();
@@ -61,10 +115,16 @@ public class WatchDog {
 
             log.info("{}:{} -> {} {}, Query Params: {}, Params: {}, Handler: {}",
                     ip, port, method, uri, queryParams, params, methodInfo.getName());
+
+        } catch (ServiceException e) {
+            // 处理拒绝访问的情况
+            log.warn("Request from IP {} was denied", ResponseUtil.getClientIp(request));
+            throw e;
         } catch (Exception e) {
             log.error("Error logging request information: {}", e.getMessage(), e);
         }
     }
+
 
     /**
      * 过滤掉无法序列化的参数
@@ -81,25 +141,5 @@ public class WatchDog {
                     }
                     return arg;
                 }).toArray();
-    }
-
-    /**
-     * 获取客户端真实IP
-     */
-    private String getClientIp(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-        if (xForwardedFor != null && !xForwardedFor.isEmpty() && !"unknown".equalsIgnoreCase(xForwardedFor)) {
-            // X-Forwarded-For 可能包含多个IP地址，取第一个非unknown的IP
-            return xForwardedFor.split(",")[0].trim();
-        }
-        String proxyClientIp = request.getHeader("Proxy-Client-IP");
-        if (proxyClientIp != null && !"unknown".equalsIgnoreCase(proxyClientIp)) {
-            return proxyClientIp;
-        }
-        String wlProxyClientIp = request.getHeader("WL-Proxy-Client-IP");
-        if (wlProxyClientIp != null && !"unknown".equalsIgnoreCase(wlProxyClientIp)) {
-            return wlProxyClientIp;
-        }
-        return request.getRemoteAddr();
     }
 }

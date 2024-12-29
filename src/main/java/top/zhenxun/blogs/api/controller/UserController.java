@@ -38,15 +38,15 @@ public class UserController {
     }
 
     @ApiOperation("修改密码")
-    @PostMapping("/changePassword")
+    @PutMapping("/changePassword")
     public Response<?> changePassword(@RequestBody ResetPasswordForm resetPasswordForm) {
         userService.resetPassword(resetPasswordForm);
         return Response.success();
     }
 
     @ApiOperation("修改邮箱")
-    @GetMapping("/changeEmail")
-    public Response<?> changeEmail(String email) {
+    @PutMapping("/changeEmail/{email}")
+    public Response<?> changeEmail(@PathVariable String email) {
         userService.resetEmail(email);
         return Response.success();
     }

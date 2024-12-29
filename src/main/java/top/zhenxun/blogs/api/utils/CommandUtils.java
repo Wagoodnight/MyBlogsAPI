@@ -6,6 +6,7 @@ import top.zhenxun.blogs.api.mapper.UserMapper;
 import top.zhenxun.blogs.api.pojo.form.LocalResetPasswordForm;
 
 import javax.annotation.PostConstruct;
+import java.io.Console;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -22,17 +23,33 @@ public class CommandUtils {
     @PostConstruct
     public void init() {
         new Thread(() -> {
-            Scanner scanner = new Scanner(System.in);
-            while (true) {
-                try {
-                    String command = scanner.nextLine();
-                    input(command);
-                } catch (NoSuchElementException | IllegalStateException e) {
-                    break;
+            Console console = System.console();
+            if (console == null) {
+                // 如果没有控制台，使用 Scanner 作为替代
+                System.out.println("No console available, using Scanner for input");
+                Scanner scanner = new Scanner(System.in);
+                while (true) {
+                    try {
+                        String command = scanner.nextLine();
+                        input(command);
+                    } catch (NoSuchElementException | IllegalStateException e) {
+                        break;
+                    }
+                }
+            } else {
+                // 如果有控制台，使用 Console
+                while (true) {
+                    try {
+                        String command = console.readLine("> ");
+                        input(command);
+                    } catch (NoSuchElementException | IllegalStateException e) {
+                        break;
+                    }
                 }
             }
         }).start();
     }
+
 
     public void input(String a) {
         switch (a) {

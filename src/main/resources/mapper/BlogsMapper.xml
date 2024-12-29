@@ -3,7 +3,8 @@
 <mapper namespace="top.zhenxun.blogs.api.mapper.BlogsMapper">
 
     <select id="blogsPage" resultType="top.zhenxun.blogs.api.pojo.vo.BlogListVO">
-        SELECT * FROM t_blogs
+        SELECT *
+        FROM t_blogs
         <where>
             1 = 1
             <if test="blogsQuery.tags != null">
@@ -16,7 +17,7 @@
                 AND is_delete = #{blogsQuery.isDelete}
             </if>
         </where>
-        ORDER BY publish_time DESC
+        ORDER BY is_top DESC, publish_time DESC
     </select>
 
     <select id="fuzzySearchPage" resultType="top.zhenxun.blogs.api.pojo.vo.BlogListVO">

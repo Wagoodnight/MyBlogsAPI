@@ -131,7 +131,8 @@ CREATE TABLE IF NOT EXISTS `t_system_setting`
     `site_secret_key`  TEXT,
     `site_url`         TEXT                              NOT NULL,
     `enable_turnstile` INTEGER                           NOT NULL,
-    `icp`              TEXT                              NOT NULL
+    `icp`              TEXT,
+    `police`           TEXT
 );
 
 INSERT INTO `t_system_setting` (`id`, `site_url`, `enable_turnstile`, `icp`)

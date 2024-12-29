@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class BlogsQuery extends Page{
+public class BlogsQuery extends Pages {
 
     /**
      * 博客标签

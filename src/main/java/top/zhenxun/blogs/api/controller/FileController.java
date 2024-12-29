@@ -38,11 +38,6 @@ public class FileController {
      */
     private static final String FILE_FOLDER = Const.FILE_FOLDER_FILE;
 
-    /**
-     * 文件下载的域名
-     */
-    private static final String DOMAIN = "http://localhost:6061/api/";
-
     @Autowired
     private SystemMapper systemMapper;
 

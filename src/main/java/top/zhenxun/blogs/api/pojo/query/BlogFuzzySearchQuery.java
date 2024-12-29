@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BlogFuzzySearchQuery extends Page{
+public class BlogFuzzySearchQuery extends Pages {
 
     /**
      * 搜索关键字

@@ -16,4 +16,6 @@ public class SystemInfoVO {
     private Integer enableTurnstile;
 
     private String icp;
+
+    private String police;
 }

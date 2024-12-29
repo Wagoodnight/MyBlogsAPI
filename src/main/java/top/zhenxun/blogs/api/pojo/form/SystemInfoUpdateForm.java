@@ -16,4 +16,6 @@ public class SystemInfoUpdateForm {
     private Integer enableTurnstile;
 
     private String icp;
+
+    private String police;
 }

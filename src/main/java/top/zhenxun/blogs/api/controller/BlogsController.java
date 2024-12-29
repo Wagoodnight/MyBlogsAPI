@@ -69,28 +69,28 @@ public class BlogsController {
     }
 
     @ApiOperation("新增标签")
-    @GetMapping("/addTags")
-    public Response<?> addTags(String name) {
+    @PostMapping("/addTags")
+    public Response<?> addTags(@RequestBody String name) {
         blogsService.addTags(name);
         return Response.success();
     }
 
     @ApiOperation("删除标签")
-    @GetMapping("/deleteTags")
-    public Response<?> deleteTags(Integer tagId) {
+    @DeleteMapping("/deleteTags/{tagId}")
+    public Response<?> deleteTags(@PathVariable Integer tagId) {
         blogsService.deleteTags(tagId);
         return Response.success();
     }
 
     @ApiOperation("重命名标签")
-    @PostMapping("/renameTags")
+    @PutMapping("/renameTags")
     public Response<?> renameTags(@RequestBody TagUpdateForm tagUpdateForm) {
         blogsService.renameTags(tagUpdateForm);
         return Response.success();
     }
 
     @ApiOperation("更新个人信息")
-    @PostMapping("/updateProfile")
+    @PutMapping("/updateProfile")
     public Response<?> updateProfile(@RequestBody ProfileForm profileForm) {
         blogsService.updateProfile(profileForm);
         return Response.success();
@@ -116,29 +116,29 @@ public class BlogsController {
     }
 
     @ApiOperation("更新博客")
-    @PostMapping("/updateBlog")
+    @PutMapping("/updateBlog")
     public Response<?> updateBlog(@RequestBody BlogsReEditForm blogsReEditForm) {
         blogsService.updateBlog(blogsReEditForm);
         return Response.success();
     }
 
     @ApiOperation("发布博客")
-    @GetMapping("/postBlog")
-    public Response<?> postBlog(Long id) {
+    @PutMapping("/postBlog/{id}")
+    public Response<?> postBlog(@PathVariable Long id) {
         blogsService.postBlog(id);
         return Response.success();
     }
 
     @ApiOperation("软删除博客")
-    @GetMapping("/deleteSoftBlog")
-    public Response<?> deleteSoftBlog (Long id) {
+    @DeleteMapping("/deleteSoftBlog/{id}")
+    public Response<?> deleteSoftBlog (@PathVariable Long id) {
         blogsService.deleteSoftBlog(id);
         return Response.success();
     }
 
     @ApiOperation("彻底删除博客")
-    @GetMapping("/deleteHardBlog")
-    public Response<?> deleteHardBlog (Long id) {
+    @DeleteMapping("/deleteHardBlog/{id}")
+    public Response<?> deleteHardBlog (@PathVariable Long id) {
         blogsService.deleteHardBlog(id);
         return Response.success();
     }

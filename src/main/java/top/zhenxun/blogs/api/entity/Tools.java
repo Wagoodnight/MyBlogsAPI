@@ -9,21 +9,17 @@ import lombok.Data;
  * @author ATRI <miko217@xnu.edu.cn>
  */
 @Data
-@TableName("t_system_setting")
-public class SystemInfo {
+@TableName("t_tools")
+public class Tools {
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
-    private String siteUrl;
+    private String title;
 
-    private String secretKey;
+    private String description;
 
-    private String siteSecretKey;
+    private String url;
 
-    private Integer enableTurnstile;
-
-    private String icp;
-
-    private String police;
+    private String icon;
 }

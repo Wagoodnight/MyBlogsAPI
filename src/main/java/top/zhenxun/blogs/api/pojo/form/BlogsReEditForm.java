@@ -12,7 +12,6 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BlogsReEditForm {
 
-
     /**
      * 博客id
      */
@@ -48,4 +47,9 @@ public class BlogsReEditForm {
      * 博客状态
      */
     private Integer status;
+
+    /**
+     * 博客是否置顶
+     */
+    private Integer isTop;
 }

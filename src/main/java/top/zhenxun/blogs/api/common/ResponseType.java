@@ -39,4 +39,13 @@ public enum ResponseType {
     public String getMsg() {
         return this.msg;
     }
+
+    public static ResponseType getResponseType(String code) {
+        for (ResponseType responseType : ResponseType.values()) {
+            if (responseType.code.equals(code)) {
+                return responseType;
+            }
+        }
+        return null;
+    }
 }

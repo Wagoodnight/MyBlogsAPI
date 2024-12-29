@@ -52,7 +52,7 @@ public class TokenUtil {
      * @return 解析出的用户信息对象
      */
     public static CurrentLoginUser getPayload(String token) {
-        // 解码令牌，不验证签名
+        // 解码令牌
         DecodedJWT jwt = JWT.decode(token);
         // 获取 "body" 声明的内容（用户信息 JSON 字符串）
         String jsonStr = jwt.getClaim("body").asString();

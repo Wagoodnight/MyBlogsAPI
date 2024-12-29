@@ -27,7 +27,7 @@ public class SystemController {
     }
 
     @ApiOperation("更新系统信息")
-    @PostMapping("/update")
+    @PutMapping("/update")
     public Response<?> updateSystemInfo(@RequestBody SystemInfoUpdateForm systemInfoUpdateForm) {
         systemService.updateSystemInfo(systemInfoUpdateForm);
         return Response.success();

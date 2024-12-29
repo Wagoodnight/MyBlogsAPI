@@ -6,7 +6,7 @@ import lombok.Data;
  * @author li
  **/
 @Data
-public class Page {
+public class Pages {
     Integer currentPage;
 
     Integer pageSize;
