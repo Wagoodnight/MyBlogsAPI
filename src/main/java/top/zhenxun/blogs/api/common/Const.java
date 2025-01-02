@@ -46,6 +46,8 @@ public class Const {
 
     public static final String[] IMAGE_SUFFIX_LIST = new String[]{".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"};
 
+    public static final String[] VIDEO_SUFFIX_LIST = new String[]{".mp4", ".webm", ".avi", ".flv", ".wmv", ".mov", ".rmvb", ".rm", ".asf", ".mpg", ".mpeg", ".mpe", ".ts", ".3gp", ".mkv", ".m4v", ".vob"};
+
     /**
      * 一秒钟最大请求次数
      */

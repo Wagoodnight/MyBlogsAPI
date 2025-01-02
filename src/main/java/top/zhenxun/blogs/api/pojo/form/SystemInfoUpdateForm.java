@@ -18,4 +18,8 @@ public class SystemInfoUpdateForm {
     private String icp;
 
     private String police;
+
+    private String wallpaperUrl;
+
+    private String wallpaperMd5;
 }

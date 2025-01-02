@@ -132,7 +132,9 @@ CREATE TABLE IF NOT EXISTS `t_system_setting`
     `site_url`         TEXT                              NOT NULL,
     `enable_turnstile` INTEGER                           NOT NULL,
     `icp`              TEXT,
-    `police`           TEXT
+    `police`           TEXT,
+    `wallpaper_url`    TEXT,
+    `wallpaper_md5`    TEXT
 );
 
 INSERT INTO `t_system_setting` (`id`, `site_url`, `enable_turnstile`, `icp`)

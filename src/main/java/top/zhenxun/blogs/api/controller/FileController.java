@@ -109,13 +109,27 @@ public class FileController {
                 throw new RuntimeException("文件不存在");
             }
 
+            // 获取文件后缀名
+            String fileExtension = filename.substring(filename.lastIndexOf(".")).toLowerCase();
+
             // 推断文件类型
             String mimeType = java.nio.file.Files.probeContentType(file.toPath());
             if (mimeType == null) {
                 mimeType = "application/octet-stream";
             }
 
-            // 判断是否为图片类型
+            boolean isVideo = Arrays.asList(Const.VIDEO_SUFFIX_LIST).contains(fileExtension);
+
+            // 如果是视频文件，使用 Blob 类型传输
+            if (isVideo) {
+                // 读取文件的 byte 数组
+                byte[] fileContent = java.nio.file.Files.readAllBytes(file.toPath());
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(mimeType))
+                        .body(fileContent);
+            }
+
+            // 如果是图片或其他类型文件，按原来的方式处理
             if (isImageFile(filename)) {
                 // 如果是图片，直接显示图片
                 byte[] fileContent = java.nio.file.Files.readAllBytes(file.toPath());
@@ -124,7 +138,7 @@ public class FileController {
                         .body(fileContent);
             }
 
-            // 如果不是图片，触发下载
+            // 如果不是图片或视频，触发下载
             byte[] fileContent = java.nio.file.Files.readAllBytes(file.toPath());
             return ResponseEntity.ok()
                     .header("Content-Disposition", "attachment; filename=\"" + filename + "\"")
@@ -135,6 +149,7 @@ public class FileController {
             throw new RuntimeException("文件操作失败: " + e.getMessage());
         }
     }
+
 
     /**
      * 判断文件是否是图片类型
